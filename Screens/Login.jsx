@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import LoginForm from '../components/LoginForm'
 import login from '../assets/login.png'
 
-const Login = () => {
+const Login = ({navigation}) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const handleKeyboardDidShow = (event) => {
@@ -34,7 +34,7 @@ const Login = () => {
           <Text style={{fontSize: 40, color: '#dee2e6', fontWeight: '700'}}>Hi there,</Text>
           <Text style={{fontSize: 30, color: '#dee2e6', fontWeight: '700'}}>Login to GT Quiz</Text>
           <Text style={{color: '#dee2e6'}}>A step to start your journey</Text>
-          <LoginForm/>
+          <LoginForm navigation={navigation}/>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
