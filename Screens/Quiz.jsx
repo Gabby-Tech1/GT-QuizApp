@@ -14,6 +14,7 @@ const Quiz = ({navigation}) => {
   const [ques, setQues] = useState(0)
   const [score, setScore] = useState(0)
   const [isloading, setIsloading] = useState(false)
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
 
   const getQuiz = async () => {
     setIsloading(true)
@@ -30,10 +31,16 @@ const Quiz = ({navigation}) => {
   },[])
 
   const handleNextPress = () => {
-    setQues(ques+1)
-    setOption(generateOptionsAndShuffle(questions[ques+1]))
-
+    if (ques!==14) {
+      setQues(ques+1);
+      setOption(generateOptionsAndShuffle(questions[ques+1]));
+      setSelectedAnswer(null); // Reset selected answer
+    }
+    if (ques===14) {
+      handleShowResults();
+    }
   }
+
   const handlePrevPress = () => {
     setQues(ques-1)
     setOption(generateOptionsAndShuffle(questions[ques-1]))
@@ -48,15 +55,9 @@ const Quiz = ({navigation}) => {
   }
 
   const handleSelectOption = (_option) => {
+    setSelectedAnswer(_option);
     if(_option===questions[ques].correct_answer){
-      setScore(score+5)
-    }
-    if (ques!==14) {
-      setQues(ques+1)
-      setOption(generateOptionsAndShuffle(questions[ques+1]))
-    }
-    if (ques===14) {
-      handleShowResults()
+      setScore(score+5);
     }
   }
 
@@ -74,26 +75,54 @@ const Quiz = ({navigation}) => {
         <Text style={styles.question}>Q. {decodeURIComponent(questions[ques].question)}</Text>
       </View>
       <View style={styles.options}>
-        <TouchableOpacity style={styles.optionButton} onPress={()=>handleSelectOption(option[0])}>
-            <Text style={styles.option}>{decodeURIComponent(option[0])}</Text>
+        <TouchableOpacity
+          style={[styles.optionButton, selectedAnswer === option[0] && {backgroundColor: '#1A759F'}]}
+          onPress={() => handleSelectOption(option[0])}
+        >
+          <Text style={styles.option}>{decodeURIComponent(option[0])}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionButton} onPress={()=>handleSelectOption(option[1])}>
-            <Text style={styles.option}>{decodeURIComponent(option[1])}</Text>
+        <TouchableOpacity
+          style={[styles.optionButton, selectedAnswer === option[1] && {backgroundColor: '#1A759F'}]}
+          onPress={() => handleSelectOption(option[1])}
+        >
+          <Text style={styles.option}>{decodeURIComponent(option[1])}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionButton} onPress={()=>handleSelectOption(option[2])}>
-            <Text style={styles.option}>{decodeURIComponent(option[2])}</Text>
+        <TouchableOpacity
+          style={[styles.optionButton, selectedAnswer === option[2] && {backgroundColor: '#1A759F'}]}
+          onPress={() => handleSelectOption(option[2])}
+        >
+          <Text style={styles.option}>{decodeURIComponent(option[2])}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionButton} onPress={()=>handleSelectOption(option[3])}>
-            <Text style={styles.option}>{decodeURIComponent(option[3])}</Text>
+        <TouchableOpacity
+          style={[styles.optionButton, selectedAnswer === option[3] && {backgroundColor: '#1A759F'}]}
+          onPress={() => handleSelectOption(option[3])}
+        >
+          <Text style={styles.option}>{decodeURIComponent(option[3])}</Text>
         </TouchableOpacity>
       </View>
+    <View style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        {selectedAnswer && (
+          <Text style={[styles.answerText, questions[ques].correct_answer === selectedAnswer && {color: 'green'}]}>
+            {questions[ques].correct_answer === selectedAnswer ? 'Correct' : 'Incorrect'}
+          </Text>
+        )}
+      </View>
+      <View style={styles.answer}>
+      {selectedAnswer && (
+        <Text style={[styles.answerText, questions[ques].correct_answer === selectedAnswer && {color: 'green'}]}>
+          Correct Answer: {decodeURIComponent(questions[ques].correct_answer)}
+        </Text>
+      )} 
+      </View>
       <View style={styles.bottom}>
-        <TouchableOpacity style={styles.button} onPress={handlePrevPress}>
+        {ques > 0 &&
+          <TouchableOpacity style={styles.button} onPress={handlePrevPress}>
             <Text style={styles.buttonText}>PREV</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        }
         {ques!==14 &&
         <TouchableOpacity style={styles.button} onPress={handleNextPress}>
-            <Text style={styles.buttonText}>SKIP</Text>
+            <Text style={styles.buttonText}>NEXT</Text>
         </TouchableOpacity>}
         {ques===14 &&
         <TouchableOpacity style={styles.button} onPress={handleShowResults}>
@@ -113,6 +142,7 @@ const styles = StyleSheet.create({
       paddingTop: 40,
       paddingHorizontal: 20,
       height: '100%',
+      backgroundColor: '#480ca8'
     },
     top:{
         marginVertical: 16,
@@ -143,17 +173,29 @@ const styles = StyleSheet.create({
     },
     question:{
       fontSize: 26,
+      color: 'white'
     },
     option:{
       fontSize: 16,
       fontWeight: '500',
       color: 'white',
     },
-    optionButton:{
+    optionButton: {
       padding: 12,
       marginVertical: 6,
       backgroundColor: '#34A0A4',
       borderRadius: 12,
+    },
+    answer: {
+      backgroundColor: '#34A0A4',
+      padding: 12,
+      borderRadius: 12,
+      marginBottom: 16,
+    },
+    answerText: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: 'white',
     },
     parent:{
       height: '100%',
@@ -162,10 +204,11 @@ const styles = StyleSheet.create({
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      height: '100%'
+      height: '100%',
     },
     loaderText: {
       fontSize: 24,
+      color: 'white'
 
     }
 })

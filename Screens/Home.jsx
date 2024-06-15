@@ -8,17 +8,17 @@ const data =[
   {
     title: 'Maths Challenge',
     score: 100,
-    date: '2021-04-01'
+    date: '2022-12-01'
   },
   {
     title: 'Science Challenge',
     score: 100,
-    date: '2021-04-01'
+    date: '2024-04-01'
   },
   {
     title: 'History Challenge',
     score: 100,
-    date: '2021-04-01'
+    date: '2021-06-19'
   },
   {
     title: 'Geography Challenge',
