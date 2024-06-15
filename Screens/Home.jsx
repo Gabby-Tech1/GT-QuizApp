@@ -34,7 +34,7 @@ const Home = ({navigation}) => {
       <View style={styles.welcome}>
         <View>
           <Text style={{color: 'white', fontSize: 20}}>Welcome,</Text>
-          <Text style={{color: 'white', fontSize: 25, fontWeight: 'bold'}}> John Doe</Text>
+          <Text style={{color: 'white', fontSize: 25, fontWeight: 'bold'}}>John Doe</Text>
         </View>
         
         <Image source={Avatar} style={{width: 70, height: 70, borderRadius: 50}}/>
@@ -87,7 +87,7 @@ const Home = ({navigation}) => {
         <Text style={{color: 'white', fontSize: 18}}>Start Challenge</Text>
       </TouchableOpacity>
       <Text style={{fontSize: 24, padding: 15, marginTop: 25, fontWeight: 'bold', color: 'white'}}>Premuim Challenges</Text>
-      <View style={{display: 'flex', gap: 20}}>
+      <View style={{display: 'flex', gap: 20, marginBottom: 40}}>
         {
           data.map((item, index)=> {
             return (

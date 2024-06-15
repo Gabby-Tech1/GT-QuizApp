@@ -177,13 +177,7 @@ const Quiz = ({navigation}) => {
         {ques===14 &&
         <TouchableOpacity style={styles.button} onPress={handleShowResults}>
             <Text style={styles.buttonText}>SHOW RESULTS</Text>
-        </TouchableOpacity>} 
-        {timer === 0 && (
-          <TouchableOpacity style={styles.button} onPress={handleTimerEnd}>
-            <Text style={styles.buttonText}>Time's Up</Text>
-          </TouchableOpacity>
-        )}
-        
+        </TouchableOpacity>}         
       </View>
       </View>}
     </View>
