@@ -1,14 +1,42 @@
-import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Avatar from '../assets/avatar.jpg'
 import { LineChart } from 'react-native-chart-kit'
 
-const Home = () => {
+
+const data =[
+  {
+    title: 'Maths Challenge',
+    score: 100,
+    date: '2021-04-01'
+  },
+  {
+    title: 'Science Challenge',
+    score: 100,
+    date: '2021-04-01'
+  },
+  {
+    title: 'History Challenge',
+    score: 100,
+    date: '2021-04-01'
+  },
+  {
+    title: 'Geography Challenge',
+    score: 100,
+    date: '2021-04-01'
+  },
+]
+const Home = ({navigation}) => {
   
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: "#480ca8"}}>
+      <ScrollView>
       <View style={styles.welcome}>
-        <Text style={{color: 'white', fontSize: 20}}>Welcome</Text>
+        <View>
+          <Text style={{color: 'white', fontSize: 20}}>Welcome,</Text>
+          <Text style={{color: 'white', fontSize: 25, fontWeight: 'bold'}}> John Doe</Text>
+        </View>
+        
         <Image source={Avatar} style={{width: 70, height: 70, borderRadius: 50}}/>
       </View>
       <View style={{padding: 30,}}>
@@ -55,6 +83,31 @@ const Home = () => {
     }}
   />
       </View>
+      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate("Quiz")}>
+        <Text style={{color: 'white', fontSize: 18}}>Start Challenge</Text>
+      </TouchableOpacity>
+      <Text style={{fontSize: 24, padding: 15, marginTop: 25, fontWeight: 'bold', color: 'white'}}>Premuim Challenges</Text>
+      <View style={{display: 'flex', gap: 20}}>
+        {
+          data.map((item, index)=> {
+            return (
+              <View key={index} style={styles.premuim}>
+                <View style={{gap: 10}}>
+                  <Text style={{fontSize: 20, fontWeight: '500',}}>{item.title}</Text>
+                  <Text style={{fontSize: 16, fontWeight: '400',}}>Max. Score: {item.score}</Text>
+                </View>
+                <View style={{}}>
+                  <TouchableOpacity style={{padding: 10, backgroundColor: '#4895ef', borderRadius: 10 }}>
+                    <Text style={{textAlign: 'center', color: 'white'}}>Unlock</Text>
+                  </TouchableOpacity>
+                  <Text style={{fontSize: 16, fontWeight: '700',}}>{item.date}</Text>
+                </View>
+              </View>
+            )
+          })
+        }
+      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -88,5 +141,25 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
 
+  },
+  btn: {
+    backgroundColor: "#4895ef",
+    display: 'flex',
+    alignItems: 'center',
+    marginHorizontal: 50,
+    padding: 10,
+    borderRadius: 10,
+  },
+  premuim: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: 'row',
+    paddingVertical: 10,
+    backgroundColor: 'white',
+    marginHorizontal: 20,
+    borderRadius: 10,
+    paddingHorizontal: 10
+    
   }
 })
