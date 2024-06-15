@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 
 const shuffleArray=(array)=>{
@@ -15,6 +15,7 @@ const Quiz = ({navigation}) => {
   const [score, setScore] = useState(0)
   const [isloading, setIsloading] = useState(false)
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [timer, setTimer] = useState(20)
 
   const getQuiz = async () => {
     setIsloading(true)
@@ -30,16 +31,36 @@ const Quiz = ({navigation}) => {
     getQuiz()
   },[])
 
+  useEffect(() => {
+    let timerInterval;
+  
+    if (ques < 15 && !selectedAnswer) {
+      timerInterval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    }
+  
+    if (timer === 0) {
+      clearInterval(timerInterval);
+      handleTimerEnd() // Automatically select the correct answer
+    }
+  
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, [ques, selectedAnswer, timer]);
+
+
   const handleNextPress = () => {
-    if (ques!==14) {
-      setQues(ques+1);
-      setOption(generateOptionsAndShuffle(questions[ques+1]));
+    if (ques < 14) {
+      setQues((prevQues) => prevQues + 1);
+      setOption(generateOptionsAndShuffle(questions[ques + 1]));
       setSelectedAnswer(null); // Reset selected answer
-    }
-    if (ques===14) {
+      setTimer(20); // Reset timer
+    } else {
       handleShowResults();
-    }
-  }
+    } 
+  };
 
   const handlePrevPress = () => {
     setQues(ques-1)
@@ -56,11 +77,35 @@ const Quiz = ({navigation}) => {
 
   const handleSelectOption = (_option) => {
     setSelectedAnswer(_option);
-    if(_option===questions[ques].correct_answer){
-      setScore(score+5);
+    if (_option === questions[ques].correct_answer) {
+      setScore((prevScore) => prevScore + 5);
     }
-  }
 
+    if (ques === 14) {
+      handleShowResults();
+    }
+  };
+
+  const handleTimerEnd = () => {
+    Alert.alert(
+      'Time Up!',
+      'You ran out of time to answer the question.',
+      [
+        {
+          text: 'Next Question',
+          onPress: handleNextPress,
+          onDismiss: () => {
+            clearInterval(timerInterval);
+            setTimer(20);
+          },
+        },
+      ],
+    );
+    setSelectedAnswer(questions[ques].incorrect_answers[0]); // Set the selected answer to an incorrect option
+  };
+
+
+  
   const handleShowResults = () => {
     navigation.navigate("Results", {
       score: score
@@ -100,6 +145,11 @@ const Quiz = ({navigation}) => {
           <Text style={styles.option}>{decodeURIComponent(option[3])}</Text>
         </TouchableOpacity>
       </View>
+      <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ fontSize: 20, color: 'white', paddingBottom: 30 }}>
+          Time Remaining: {timer} seconds
+        </Text>
+      </View> 
     <View style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         {selectedAnswer && (
           <Text style={[styles.answerText, questions[ques].correct_answer === selectedAnswer && {color: 'green'}]}>
@@ -127,7 +177,12 @@ const Quiz = ({navigation}) => {
         {ques===14 &&
         <TouchableOpacity style={styles.button} onPress={handleShowResults}>
             <Text style={styles.buttonText}>SHOW RESULTS</Text>
-        </TouchableOpacity>}
+        </TouchableOpacity>} 
+        {timer === 0 && (
+          <TouchableOpacity style={styles.button} onPress={handleTimerEnd}>
+            <Text style={styles.buttonText}>Time's Up</Text>
+          </TouchableOpacity>
+        )}
         
       </View>
       </View>}
